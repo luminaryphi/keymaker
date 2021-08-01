@@ -1,4 +1,4 @@
-use cosmwasm_std::{Api, Binary, Env, Extern, HandleResponse, InitResponse, Querier, StdError, StdResult, Storage, to_binary};
+use cosmwasm_std::{Api, Binary, Env, Extern, HandleResponse, InitResponse, Querier, StdResult, Storage, to_binary};
 
 use crate::msg::{HandleMsg, HandleAnswer, InitMsg, QueryAnswer, QueryMsg};
 use crate::state::{load, save, State};
@@ -66,9 +66,6 @@ pub fn gather_entropy<S: Storage, A: Api, Q: Querier>(
     entropy: String
 ) -> StdResult<HandleResponse> {
 
-    if entropy.len() > 10 || entropy.len() < 1 {
-        return Err(StdError::generic_err("PLEASE USE BETWEEN 1 AND 10 CHARACTERS IN YOUR ENTROPY"));
-    }
 
     //Load state
     let mut state: State = load(&mut deps.storage, STATE_KEY)?;
@@ -101,7 +98,7 @@ pub fn generate_key<S: Storage, A: Api, Q: Querier>(
 
     //Load state
     let state: State = load(&mut deps.storage, STATE_KEY)?;
-    
+
 
     //Generate pub and priv key
     let con_priv_key = StaticSecret::from(state.seed);

@@ -141,8 +141,6 @@ pub fn query<S: Storage, A: Api, Q: Querier>(
 
 
 
-
-//Checks if the mix has reached threshold conditions and returns true/false if ready
 pub fn get_info<S: Storage, A: Api, Q: Querier>(
     _deps: &Extern<S, A, Q>,
 ) -> StdResult<Binary> {

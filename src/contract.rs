@@ -104,7 +104,7 @@ pub fn generate_key<S: Storage, A: Api, Q: Querier>(
     let con_priv_key = StaticSecret::from(state.seed);
     let con_pub_key = PublicKey::from(&con_priv_key);
 
-    //Saves keys to byte array in option
+    //Saves keys to byte arrays
     let priv_key = con_priv_key.to_bytes();
     let pub_key = con_pub_key.to_bytes();
 

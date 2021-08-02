@@ -1,4 +1,4 @@
-use cosmwasm_std::{Api, Binary, Env, Extern, HandleResponse, InitResponse, Querier, StdResult, Storage, to_binary};
+use cosmwasm_std::{Api, Binary, Env, Extern, HandleResponse, InitResponse, Querier, StdResult, Storage, to_binary, Uint128};
 
 use crate::msg::{HandleMsg, HandleAnswer, InitMsg, QueryAnswer, QueryMsg};
 use crate::state::{load, save, State};
@@ -63,7 +63,7 @@ pub fn handle<S: Storage, A: Api, Q: Querier>(
 pub fn gather_entropy<S: Storage, A: Api, Q: Querier>(
     deps: &mut Extern<S, A, Q>,
     _env: Env,
-    entropy: String
+    entropy: Uint128
 ) -> StdResult<HandleResponse> {
 
 
@@ -91,7 +91,7 @@ pub fn gather_entropy<S: Storage, A: Api, Q: Querier>(
 pub fn generate_key<S: Storage, A: Api, Q: Querier>(
     deps: &mut Extern<S, A, Q>,
     env: Env,
-    entropy: String
+    entropy: Uint128
 ) -> StdResult<HandleResponse> {
 
     gather_entropy(deps, env, entropy)?;

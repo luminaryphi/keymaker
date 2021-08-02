@@ -1,3 +1,4 @@
+use cosmwasm_std::Uint128;
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 
@@ -14,10 +15,10 @@ pub struct InitMsg {
 #[serde(rename_all = "snake_case")]
 pub enum HandleMsg {
     Entropy {
-        entropy: String
+        entropy: Uint128
     },
     Keygen {
-        entropy: String
+        entropy: Uint128
     }
 
 }

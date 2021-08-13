@@ -1,4 +1,3 @@
-use cosmwasm_std::Uint128;
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 
@@ -15,10 +14,7 @@ pub struct InitMsg {
 #[serde(rename_all = "snake_case")]
 pub enum HandleMsg {
     Entropy {
-        entropy: Uint128
-    },
-    Keygen {
-        entropy: Uint128
+        entropy: String
     }
 
 }
@@ -26,11 +22,7 @@ pub enum HandleMsg {
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
 #[serde(rename_all = "snake_case")]
 pub enum HandleAnswer {
-    Keygen {
-        pubkey: [u8; 32],
-        privkey: [u8; 32]
-    },
-
+   
 
 }
 
@@ -41,7 +33,10 @@ pub enum HandleAnswer {
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
 #[serde(rename_all = "snake_case")]
 pub enum QueryMsg {
-    Info {}
+    Info {},
+    Keypair {
+        entropy: String
+    }
 }
 
 /// Responses from query function
@@ -50,5 +45,11 @@ pub enum QueryMsg {
 pub enum QueryAnswer {
     Info {
         info: String
+    },
+    Keypair {
+        pubkey: [u8; 32],
+        privkey: [u8; 32]
     }
 }
+
+

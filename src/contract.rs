@@ -1,6 +1,6 @@
-use cosmwasm_std::{Api, Binary, Env, Extern, HandleResponse, InitResponse, Querier, StdResult, Storage, to_binary, Uint128};
+use cosmwasm_std::{Api, Binary, Env, Extern, HandleResponse, InitResponse, Querier, StdError, StdResult, Storage, to_binary};
 
-use crate::msg::{HandleMsg, HandleAnswer, InitMsg, QueryAnswer, QueryMsg};
+use crate::msg::{HandleMsg, InitMsg, QueryAnswer, QueryMsg};
 use crate::state::{load, save, State};
 
 use sha2::{Digest};
@@ -51,7 +51,6 @@ pub fn handle<S: Storage, A: Api, Q: Querier>(
 ) -> StdResult<HandleResponse> {
     match msg {
         HandleMsg::Entropy {entropy } => gather_entropy(deps, env, entropy),
-        HandleMsg::Keygen {entropy} => generate_key(deps, env, entropy)
     }
 }
 
@@ -63,7 +62,7 @@ pub fn handle<S: Storage, A: Api, Q: Querier>(
 pub fn gather_entropy<S: Storage, A: Api, Q: Querier>(
     deps: &mut Extern<S, A, Q>,
     _env: Env,
-    entropy: Uint128
+    entropy: String
 ) -> StdResult<HandleResponse> {
 
 
@@ -88,41 +87,7 @@ pub fn gather_entropy<S: Storage, A: Api, Q: Querier>(
 }
 
 
-pub fn generate_key<S: Storage, A: Api, Q: Querier>(
-    deps: &mut Extern<S, A, Q>,
-    env: Env,
-    entropy: Uint128
-) -> StdResult<HandleResponse> {
 
-    gather_entropy(deps, env, entropy)?;
-
-    //Load state
-    let state: State = load(&mut deps.storage, STATE_KEY)?;
-
-
-    //Generate pub and priv key
-    let con_priv_key = StaticSecret::from(state.seed);
-    let con_pub_key = PublicKey::from(&con_priv_key);
-
-    //Saves keys to byte arrays
-    let priv_key = con_priv_key.to_bytes();
-    let pub_key = con_pub_key.to_bytes();
-
-    //Save State
-    save(&mut deps.storage, STATE_KEY, &state)?;
-
-
-    return Ok(HandleResponse {
-        messages: vec![],
-        log: vec![],
-        data: Some(to_binary(&HandleAnswer::Keygen {
-            pubkey: pub_key,
-            privkey: priv_key
-
-            })?),
-        })    
-
-}
 
 
 
@@ -135,6 +100,7 @@ pub fn query<S: Storage, A: Api, Q: Querier>(
 ) -> StdResult<Binary> {
    match msg {
     QueryMsg::Info { } => get_info(deps),
+    QueryMsg::Keypair { entropy} => get_key(deps, entropy)
    }
     
 }
@@ -149,6 +115,36 @@ pub fn get_info<S: Storage, A: Api, Q: Querier>(
     data.push_str("Made by: Lumi @ Trivium");
     
     to_binary(&QueryAnswer::Info{ info: data})
+
+    
+}
+
+
+pub fn get_key<S: Storage, A: Api, Q: Querier>(
+    deps: &Extern<S, A, Q>,
+    entropy: String
+) -> StdResult<Binary> {
+
+    if entropy.len() < 1 {
+        return Err(StdError::generic_err("YOU MUST ENTER SOME ENTROPY"));
+    }
+
+    //Load state
+    let state: State = load(&deps.storage, STATE_KEY)?;
+
+
+    //Converts new entropy and old key into a new hash
+    let new_data: String = format!("{:?}+{}", state.seed, entropy);
+
+    let hashvalue = sha2::Sha256::digest(new_data.as_bytes());
+    let hash: [u8; 32] = hashvalue.as_slice().try_into().expect("Wrong length");
+
+     //Generate pub and priv key
+     let con_priv_key = StaticSecret::from(hash);
+     let con_pub_key = PublicKey::from(&con_priv_key);
+
+    
+    to_binary(&QueryAnswer::Keypair{ pubkey: con_pub_key.to_bytes(), privkey: con_priv_key.to_bytes()})
 
     
 }

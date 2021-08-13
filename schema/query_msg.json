@@ -12,6 +12,25 @@
           "type": "object"
         }
       }
+    },
+    {
+      "type": "object",
+      "required": [
+        "keypair"
+      ],
+      "properties": {
+        "keypair": {
+          "type": "object",
+          "required": [
+            "entropy"
+          ],
+          "properties": {
+            "entropy": {
+              "type": "string"
+            }
+          }
+        }
+      }
     }
   ]
 }

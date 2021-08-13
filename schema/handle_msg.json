@@ -20,25 +20,6 @@
           }
         }
       }
-    },
-    {
-      "type": "object",
-      "required": [
-        "keygen"
-      ],
-      "properties": {
-        "keygen": {
-          "type": "object",
-          "required": [
-            "entropy"
-          ],
-          "properties": {
-            "entropy": {
-              "type": "string"
-            }
-          }
-        }
-      }
     }
   ]
 }

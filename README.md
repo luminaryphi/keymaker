@@ -10,6 +10,11 @@ Why would you want to use this?
 Random number generation is difficult to do in any blockchains with public data, and even in the Secret Chain which is private, it can be difficult to ensure no one person, or collaborating collective is able to remember their key or put their inputs together to recreate the key used for RNG. 
 Keymaker solves this by crowdsourcing the entropy pool, enabling anyone to add entropy privately, changing the RNG seed with every interaction.
 
+
+Holodeck-2 Testnet Address:
+secret10kr8qrz6gte6c5jfza04yacst48tep25jmtxyl
+
+
 Commands:
 
 
